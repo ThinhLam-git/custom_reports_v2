@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<odoo>
+    <data>
+        <!--        action of inventory.report (start)-->
+        <record id="action_product_inventory_report_custom" model="ir.actions.act_window">
+            <field name="name">Báo cáo Tồn kho</field>
+            <field name="res_model">product.product</field>
+            <field name="view_mode">list,form</field>
+<!--            <field name="search_view_id" ref="view_product_inventory_search_custom"/>-->
+<!--            <field name="context">{'search_default_storable_products': 1, 'search_default_group_by_categ_id': 1}</field>-->
+<!--            <field name="view_ids" eval="[(5,0,0),-->
+<!--                (0,0,{'view_mode': 'list', 'view_id': ref('view_product_inventory_list_custom')}),-->
+<!--                (0,0,{'view_mode': 'form', 'view_id': ref('product.product_normal_form_view')})-->
+<!--            ]"/>-->
+        </record>
+        <!--        action of inventory.report (end)-->
+
+        <!--        search view (start)-->
+        <record id="view_product_inventory_search_custom" model="ir.ui.view">
+            <field name="name">product.product.inventory.search.custom</field>
+            <field name="model">product.product</field>
+            <field name="arch" type="xml">
+                <search string="Tìm kiếm Sản phẩm Tồn kho">
+                    <field name="name" string="Tên Sản phẩm"/>
+                    <field name="default_code" string="Mã Nội bộ"/>
+                    <field name="categ_id" string="Danh mục Sản phẩm"/>
+                    <separator/>
+                    <filter string="Có thể lưu kho" name="storable_products" domain="[('type', '=', 'product')]"/>
+                    <filter string="Hàng tiêu dùng" name="consumable_products" domain="[('type', '=', 'consu')]"/>
+                    <filter string="Dịch vụ" name="service_products" domain="[('type', '=', 'service')]"/>
+                    <separator/>
+                    <filter string="Còn hàng" name="in_stock" domain="[('qty_available', '>', 0)]"/>
+                    <filter string="Hết hàng" name="out_of_stock" domain="[('qty_available', '&lt;=', 0)]"/>
+                    <group expand="1" string="Nhóm theo">
+                        <filter string="Danh mục Sản phẩm" name="group_by_categ_id" context="{'group_by':'categ_id'}"/>
+                        <filter string="Loại Sản phẩm" name="group_by_type" context="{'group_by':'type'}"/>
+                        <filter string="Ngày nhập kho" name="group_by_date" context="{'group_by':'create_date'}"/>                   </group>
+                </search>
+            </field>
+        </record>
+        <!--        search view (end)-->
+
+        <!--        list view (start) -->
+        <record id="view_product_inventory_list_custom" model="ir.ui.view">
+            <field name="name">product.product.inventory.list.custom</field>
+            <field name="model">product.product</field>
+            <field name="arch" type="xml">
+                <list string="Tồn kho Sản phẩm">
+                    <field name="display_name" string="Tên Sản phẩm"/>
+                    <field name="default_code" optional="show"/>
+                    <field name="categ_id" optional="show"/>
+                    <field name="qty_available" string="Số lượng Có sẵn"/>
+                    <field name="virtual_available" string="Số lượng Dự báo" optional="show"/>
+                    <field name="uom_id" string="Đơn vị Tính" groups="uom.group_uom"/>
+                    <field name="type" string="Loại Sản phẩm" optional="hide"/>
+                    <field name="lst_price" string="Giá bán" optional="show"/>
+                    <field name="standard_price" string="Giá vốn" optional="show" groups="base.group_user"/>
+                </list>
+            </field>
+        </record>
+        <!--        list view (start) -->
+
+    </data>
+</odoo>

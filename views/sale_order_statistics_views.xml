@@ -1,0 +1,122 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<odoo>
+    <data>
+        <!--Search view (start)-->
+        <record id="view_sale_order_statistics_search_custom" model="ir.ui.view">
+            <field name="name">sale.order.statistics.search.custom</field>
+            <field name="model">sale.order.custom.report.line</field>
+            <field name="arch" type="xml">
+                <search string="Tìm kiếm đơn hàng">
+                    <field name="name" string="Mã đơn hàng"/>
+                    <field name="customer_id" string="Khách hàng" operator="child_of"/>
+                    <field name="user_id" string="Nhân viên Bán hàng"/>
+                    <field name="state" string="Trạng thái đơn hàng"/>
+                    <field name="order_date" string="Ngày đặt hàng"/>
+                    <field name="team_id" string="Đội ngũ bán hàng"/>
+                    <field name="warehouse_id" string="Kho hàng"/>
+                    <field name="pricelist_id" string="Bảng giá"/>
+                    <separator/>
+                    <filter string="Đơn nháp" name="draft_name" domain="[('state','=','draft')]"/>
+                    <filter string="Đã gửi" name="sent_state" domain="[('state','=','sent')]"/>
+                    <filter string="Đơn hàng bán" name="sale_state" domain="[('state','=','sale')]"/>
+                    <filter string="Hoàn thành" name="done_state" domain="[('state','=','done')]"/>
+                    <filter string="Đã hủy" name="cancel_state" domain="[('state','=','cancel')]"/>
+                    <separator/>
+                    <filter string="Đơn của tôi" name="my_orders" domain="[('user_id','=','uid')]"/>
+                    <separator/>
+                    <filter name="filter_date_order" date="order_date" string="Ngày đặt hàng"/>
+                    <group expand="0" string="Nhóm theo">
+                        <filter string="Nhân viên bán hàng" name="group_by_user" context="{'group_by':'user_id'}"/>
+                        <filter string="Khách hàng" name="group_by_partner" context="{'group_by':'customer_id'}"/>
+                        <filter string="Thành phố" name="group_by_city" context="{'group_by':'city'}"/>
+                        <filter string="Đội ngũ bán hàng" name="group_by_team" context="{'group_by':'team_id'}"/>
+                        <filter string="Kho hàng" name="group_by_warehouse" context="{'group_by':'warehouse_id'}"/>
+                        <filter string="Bảng giá" name="group_by_pricelist" context="{'group_by':'pricelist_id'}"/>
+                        <filter string="Trạng thái" name="group_by_state" context="{'group_by':'state'}"/>
+                        <filter string="Ngày đặt hàng" name="group_by_date_order_day"
+                                context="{'group_by':'order_date:day'}"/>
+                        <filter string="Tháng đặt hàng" name="group_by_date_order_month"
+                                context="{'group_by':'order_date:month'}"/>
+                    </group>
+                </search>
+            </field>
+        </record>
+        <!--Search view (end)-->
+
+        <!--        List view (start)-->
+        <record id="view_sale_order_statistics_list_custom" model="ir.ui.view">
+            <field name="name">sale.order.statistics.list.custom</field>
+            <field name="model">sale.order.custom.report.line</field>
+            <field name="arch" type="xml">
+                <list string="Đơn hàng">
+                    <field name="name"/>
+                    <field name="order_date"/>
+                    <field name="customer_id"/>
+                    <field name="city"/>
+                    <field name="user_id"/>
+                    <field name="team_id"/>
+                    <field name="warehouse_id"/>
+                    <field name="order_price_total" sum="Tổng cộng"/>
+                    <field name="state"/>
+                    <field name="invoice_status" optional="show"/>
+                </list>
+            </field>
+        </record>
+        <!--        List view (end)-->
+
+        <!--        Graph view (start)-->
+        <record id="view_sale_order_statistics_graph_custom" model="ir.ui.view">
+            <field name="name">sale.order.statistics.graph.custom</field>
+            <field name="model">sale.order.custom.report.line</field>
+            <field name="arch" type="xml">
+                <graph string="Phân tích Đơn hàng theo Trạng thái" type="bar">
+                    <field name="state" type="row"/>
+                    <field name="order_price_total" type="measure" operator="+"/>
+                </graph>
+            </field>
+        </record>
+
+        <record id="view_sale_order_trend_graph_custom" model="ir.ui.view">
+            <field name="name">sale.order.trend.graph.custom</field>
+            <field name="model">sale.order.custom.report.line</field>
+            <field name="arch" type="xml">
+                <graph string="Xu hướng Doanh thu theo Tháng" type="line">
+                    <field name="order_date" interval="month" type="row"/>
+                    <field name="order_price_total" type="measure" operator="+"/>
+                </graph>
+            </field>
+        </record>
+        <!--        Graph view (end)-->
+
+        <!--        Pivot view (start)-->
+        <record id="view_sale_order_statistics_pivot_custom" model="ir.ui.view">
+            <field name="name">sale.order.statistics.pivot.custom</field>
+            <field name="model">sale.order.custom.report.line</field>
+            <field name="arch" type="xml">
+                <pivot string="Phân tích Đơn hàng" disable_linking="True">
+                    <field name="customer_id" type="row"/>
+                    <field name="city" type="col" string="Thành phố"/>
+                    <field name="user_id" type="col"/>
+                    <field name="team_id" type="col"/>
+                    <field name="order_price_total" type="measure" operator="sum"/>
+                </pivot>
+            </field>
+        </record>
+        <!--        Pivot view (end)-->
+
+        <!--Action of sale.order.statistics.custom model (start)-->
+        <record id="action_sale_order_statistics_custom" model="ir.actions.act_window">
+            <field name="name">Thống kê đơn hàng</field>
+            <field name="res_model">sale.order.custom.report.line</field>
+            <field name="view_mode">list,graph,pivot,form</field>
+            <field name="search_view_id" ref="view_sale_order_statistics_search_custom"/>
+            <field name="view_id" ref="view_sale_order_statistics_list_custom"/>
+            <field name="help" type="html">
+                <p class="o_view_nocontent_smiling_face">
+                    Tạo đơn hàng đầu tiên
+                </p>
+            </field>
+        </record>
+        <!--Action of sale.order.statistics.custom model (end)-->
+    </data>
+</odoo>
