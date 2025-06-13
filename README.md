@@ -54,4 +54,5 @@ custom_reports_v2/
 Module này được phát hành dưới giấy phép LGPL-3.
 
 ## Hỗ trợ
-Để được hỗ trợ, vui lòng liên hệ với tác giả: LamTuanThinh22521408 
+Để được hỗ trợ, vui lòng liên hệ với tác giả: LamTuanThinh22521408
+FB: Lâm Tuấn Thịnh
